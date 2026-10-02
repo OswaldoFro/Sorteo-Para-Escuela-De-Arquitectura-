@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rifa Pro-Estudios Arquitectura CUT</title>
+  <title>Rifa Pro-Estudios Arquitectura</title>
   <style>
     :root {
       --primary: #1e3a8a;
       --secondary: #0d9488;
-      --accent: #f59e0b;
       --bg: #f8fafc;
       --card-bg: #ffffff;
       --text: #1e293b;
@@ -109,7 +108,6 @@
       font-size: 0.95rem;
     }
 
-    /* Tablero de Boletos */
     .tickets-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -127,7 +125,6 @@
       font-size: 0.9rem;
       cursor: pointer;
       text-align: center;
-      transition: all 0.2s;
     }
 
     .ticket-btn.selected {
@@ -205,53 +202,27 @@
       cursor: pointer;
     }
 
-    /* Ruleta */
-    .wheel-container {
-      text-align: center;
-    }
-
-    #canvas {
-      margin: 15px auto;
-      display: block;
-      max-width: 100%;
-    }
-
+    .wheel-container { text-align: center; }
+    #canvas { margin: 15px auto; display: block; max-width: 100%; }
     .pointer {
-      width: 0;
-      height: 0;
+      width: 0; height: 0;
       border-left: 15px solid transparent;
       border-right: 15px solid transparent;
       border-top: 25px solid #ef4444;
       margin: 0 auto -10px auto;
-      position: relative;
-      z-index: 10;
+      position: relative; z-index: 10;
     }
-
     #timer {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: #dc2626;
-      background: #fef2f2;
-      padding: 8px;
-      border-radius: 8px;
-      margin-bottom: 12px;
+      font-size: 1.1rem; font-weight: bold; color: #dc2626;
+      background: #fef2f2; padding: 8px; border-radius: 8px; margin-bottom: 12px;
     }
-
     .participant-list {
-      max-height: 180px;
-      overflow-y: auto;
-      margin-top: 10px;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 10px;
+      max-height: 180px; overflow-y: auto; margin-top: 10px;
+      border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px;
     }
-
     .participant-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 0.85rem;
+      display: flex; justify-content: space-between; padding: 6px 0;
+      border-bottom: 1px solid #f1f5f9; font-size: 0.85rem;
     }
   </style>
 </head>
@@ -260,17 +231,16 @@
   <div class="container">
     <header>
       <h1>🎯 Gran Rifa Pro-Estudios Arquitectura CUT</h1>
-      <p>Apóyame a financiar las mensualidades de mi cuatrimestre universitario</p>
+      <p id="headerSub">Apóyame a financiar las mensualidades de mi cuatrimestre universitario</p>
     </header>
 
     <div class="grid-container">
       
-      <!-- Detalle y Registro -->
       <div class="card">
         <h2>🎁 Premios y Selección de Boletos</h2>
         <div class="prizes-grid">
           <div class="prize-item">
-            <img src="perfume.jpg" alt="Perfume Valentino Donna" onerror="this.src='https://m.media-amazon.com/images/I/61N+R13J0SL._SL1500_.jpg'">
+            <img src="https://m.media-amazon.com/images/I/61N+R13J0SL._SL1500_.jpg" alt="Perfume Valentino Donna">
             <div class="prize-title">1.er Lugar</div>
             <small>Perfume Valentino Donna + Licuadora Ninja</small>
           </div>
@@ -282,17 +252,9 @@
         </div>
 
         <p style="font-size: 0.9rem; font-weight: bold; margin-top: 10px;">👇 Selecciona tu(s) número(s) disponible(s):</p>
-        <div class="tickets-grid" id="ticketsGrid">
-          <!-- Se generan dinámicamente del 01 al 54 -->
-        </div>
+        <div class="tickets-grid" id="ticketsGrid"></div>
 
-        <div class="payment-info">
-          <strong>💳 Datos de Transferencia:</strong><br>
-          • <strong>Beneficiario:</strong> JOSE OSWALDO HUERTA LOPEZ<br>
-          • <strong>CLABE:</strong> <code>638180010183467457</code> (Nu)<br>
-          • <strong>Depósito OXXO/Soriana:</strong> <code>5101 2555 5199 6783</code><br>
-          • <strong>Costo por boleto:</strong> $200 MXN (54 boletos)
-        </div>
+        <div class="payment-info" id="paymentDetails"></div>
 
         <form id="registerForm">
           <label for="fullname">Nombre completo:</label>
@@ -307,19 +269,16 @@
           <button type="submit">Apartar mis boletos</button>
         </form>
 
-        <a id="waLink" href="https://wa.me/526636691684?text=Hola,%20quisiera%20comprobar%20mi%20boleto." class="whatsapp-btn" target="_blank">
+        <a id="waLink" href="#" class="whatsapp-btn" target="_blank">
           📲 Enviar Comprobante por WhatsApp
         </a>
       </div>
 
-      <!-- Ruleta y Participantes -->
       <div class="card wheel-container">
         <h2>🎡 Sorteo Automático en Vivo</h2>
         <div id="timer">Cargando temporizador...</div>
-
         <div class="pointer"></div>
         <canvas id="canvas" width="280" height="280"></canvas>
-
         <div style="margin-top:15px; text-align: left;">
           <h3 style="font-size: 1rem;">📋 Participantes Confirmados</h3>
           <div class="participant-list" id="participantList"></div>
@@ -330,16 +289,40 @@
   </div>
 
   <script>
+    // Detectar si el link es para Andrea
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAndrea = urlParams.get('vendedor') === 'andrea';
+
+    // Configuración según el vendedor
+    const sellerData = isAndrea ? {
+      name: "Andrea",
+      phone: "526646968961",
+      bankHtml: `<strong>💳 Datos de Transferencia:</strong><br>
+                 • <strong>Beneficiario:</strong> Andrea Patricia Figueroa Camacho<br>
+                 • <strong>CLABE:</strong> <code>722969013242444814</code><br>
+                 • <strong>Institución:</strong> Mercado Pago Wallet<br>
+                 • <strong>Costo por boleto:</strong> $200 MXN (54 boletos)`
+    } : {
+      name: "Oswaldo",
+      phone: "526636691684",
+      bankHtml: `<strong>💳 Datos de Transferencia:</strong><br>
+                 • <strong>Beneficiario:</strong> JOSE OSWALDO HUERTA LOPEZ<br>
+                 • <strong>CLABE:</strong> <code>638180010183467457</code> (Nu)<br>
+                 • <strong>Depósito OXXO/Soriana:</strong> <code>5101 2555 5199 6783</code><br>
+                 • <strong>Costo por boleto:</strong> $200 MXN (54 boletos)`
+    };
+
+    // Aplicar personalización
+    document.getElementById("paymentDetails").innerHTML = sellerData.bankHtml;
+    document.getElementById("waLink").href = `https://wa.me/${sellerData.phone}?text=Hola,%20quisiera%20enviar%20mi%20comprobante%20de%20pago.`;
+
     const totalTickets = 54;
     let selectedTickets = [];
     let participants = JSON.parse(localStorage.getItem("rifa_participants")) || [];
 
-    // Generar el grid de boletos del 01 al 54
     function renderTicketsGrid() {
       const grid = document.getElementById("ticketsGrid");
       grid.innerHTML = "";
-
-      // Extraer números ya tomados
       let takenTickets = [];
       participants.forEach(p => {
         let nums = p.ticket.split(",").map(n => n.trim());
@@ -355,11 +338,8 @@
 
         if (takenTickets.includes(numStr)) {
           btn.classList.add("taken");
-          btn.title = "Número ocupado";
         } else {
-          if (selectedTickets.includes(numStr)) {
-            btn.classList.add("selected");
-          }
+          if (selectedTickets.includes(numStr)) btn.classList.add("selected");
           btn.onclick = () => toggleTicketSelection(numStr);
         }
         grid.appendChild(btn);
@@ -376,7 +356,6 @@
       renderTicketsGrid();
     }
 
-    // Registro
     document.getElementById("registerForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const name = document.getElementById("fullname").value;
@@ -384,19 +363,17 @@
       const ticket = document.getElementById("ticketNumber").value;
 
       if (!ticket) {
-        alert("Por favor selecciona al menos un número disponible en el tablero de arriba.");
+        alert("Selecciona al menos un número disponible.");
         return;
       }
 
-      const newParticipant = { name, phone, ticket };
-      participants.push(newParticipant);
+      participants.push({ name, phone, ticket });
       localStorage.setItem("rifa_participants", JSON.stringify(participants));
 
-      const waMsg = encodeURIComponent(`Hola Oswaldo, aparté boleto(s) en la página.\nNombre: ${name}\nBoleto(s): ${ticket}\nAdjunto mi comprobante de pago.`);
-      document.getElementById("waLink").href = `https://wa.me/526636691684?text=${waMsg}`;
+      const waMsg = encodeURIComponent(`Hola ${sellerData.name}, aparté boleto(s) en la página.\nNombre: ${name}\nBoleto(s): ${ticket}\nAdjunto mi comprobante.`);
+      document.getElementById("waLink").href = `https://wa.me/${sellerData.phone}?text=${waMsg}`;
 
-      alert("¡Boletos apartados! Haz clic en el botón verde para enviar tu comprobante por WhatsApp.");
-      
+      alert("¡Boletos apartados! Haz clic en el botón verde para enviar tu comprobante.");
       selectedTickets = [];
       this.reset();
       updateUI();
@@ -404,11 +381,10 @@
 
     function updateUI() {
       renderTicketsGrid();
-      
       const listEl = document.getElementById("participantList");
       listEl.innerHTML = "";
       if (participants.length === 0) {
-        listEl.innerHTML = "<p style='color:#94a3b8;'>Aún no hay participantes registrados.</p>";
+        listEl.innerHTML = "<p style='color:#94a3b8;'>Aún no hay participantes.</p>";
       } else {
         participants.forEach(p => {
           const item = document.createElement("div");
@@ -420,10 +396,8 @@
       drawRouletteWheel();
     }
 
-    // Dibujar Ruleta
     const canvas = document.getElementById("canvas");
     const ctx = canvas.getContext("2d");
-    
     function drawRouletteWheel() {
       ctx.clearRect(0, 0, 280, 280);
       const total = participants.length > 0 ? participants.length : 1;
@@ -432,12 +406,10 @@
       for(let i = 0; i < total; i++) {
         const angle = i * arc;
         ctx.fillStyle = i % 2 === 0 ? "#1e3a8a" : "#0d9488";
-
         ctx.beginPath();
         ctx.arc(140, 140, 120, angle, angle + arc, false);
         ctx.arc(140, 140, 25, angle + arc, angle, true);
         ctx.fill();
-
         ctx.save();
         ctx.fillStyle = "white";
         ctx.translate(140 + Math.cos(angle + arc / 2) * 80, 140 + Math.sin(angle + arc / 2) * 80);
@@ -448,12 +420,10 @@
       }
     }
 
-    // Temporizador
     const targetDate = new Date("November 1, 2026 15:00:00").getTime();
     setInterval(function() {
       const now = new Date().getTime();
       const distance = targetDate - now;
-
       if (distance < 0) {
         document.getElementById("timer").innerHTML = "🚀 ¡EL SORTEO ESTÁ EN PROCESO!";
       } else {
